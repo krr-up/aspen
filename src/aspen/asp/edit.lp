@@ -18,3 +18,5 @@ depends(G,G') :- replacement(G,R), target(G',T), desc(R,T).
 %% #show desc/2.
 %% #show depends/2.
 
+edit(N, format("{0}(X)", (N,())))
+  :- node(N); type(N,"symbolic_atom"); #false : child(N,M), type(M,"terms").
