@@ -1,12 +1,11 @@
-from unittest import TestCase
 from pathlib import Path
 from typing import Optional, Sequence
-from graphlib import CycleError
+from unittest import TestCase
 
 import tree_sitter_clingo as ts_clingo
-from tree_sitter import Language, Parser
-from clingo.symbol import parse_term, String, Tuple_, Number, Function, Symbol
 from clingo.core import Library
+from clingo.symbol import Function, Number, String, Symbol, Tuple_, parse_term
+from tree_sitter import Language, Parser
 
 from aspen.tree import AspenTree, SourceInput
 
@@ -79,7 +78,7 @@ class TestAspenTree(TestCase):
     def test_parse_files(self):
         """Test parsing of input files."""
         self.assertParseEqualsFile(
-            clingo_lang, asp_dir / "ab.lp", asp_dir / "ab_reified_file.txt"
+            clingo_lang, asp_dir / "ab.lp", asp_dir / "ab_reified_string.txt"
         )
 
     def test_reify_missing_node(self):

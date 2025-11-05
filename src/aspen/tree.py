@@ -2,20 +2,19 @@
 
 from collections import defaultdict
 from dataclasses import dataclass
-from graphlib import TopologicalSorter, CycleError
+from graphlib import CycleError, TopologicalSorter
 from pathlib import Path
-from typing import Optional, Literal, Sequence, List
+from typing import List, Literal, Optional, Sequence
 
 import tree_sitter as ts
 from clingo.control import Control
 from clingo.core import Library
 from clingo.solve import Model
-from clingo.symbol import Symbol, Function, Number, String, Tuple_, SymbolType
+from clingo.symbol import Function, Number, String, Symbol, SymbolType, Tuple_
 
 import aspen
-from aspen.utils.logging import get_logger, get_clingo_logger, get_ts_logger
+from aspen.utils.logging import get_clingo_logger, get_logger, get_ts_logger
 from aspen.utils.tree_sitter_utils import ts_edit_tree
-
 
 logger = get_logger(__name__)
 clingo_logger = get_clingo_logger(logger)
@@ -173,12 +172,6 @@ class AspenTree:
         lang_name = source.parser.language.name
         if lang_name is None:  # nocoverage
             raise ValueError(f"Language of parser of source cannot be None: {source}.")
-        if source.path is not None:
-            source_path = str(source.path)
-            path_fact = Function(
-                self.lib, "path", [source.id, String(self.lib, source_path)]
-            )
-            self.facts.append(path_fact)
         lang_fact = Function(
             self.lib,
             "language",
@@ -386,7 +379,9 @@ class AspenTree:
         additional changed ranges that will not (necessarily) be
         detected by tree-sitter when re-parsing after the edit.
 
-        The edited symbols must first be sorted via _topological_sort_edits
+        The edited symbols must first be sorted via
+        _topological_sort_edits.
+
         """
         seen = set()
         dupes = {
