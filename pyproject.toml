@@ -3,27 +3,32 @@ requires = ["setuptools", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "fillname"
-authors = [{ name = "Author Fillname", email = "author@fillname.org" }]
-description = "A template project."
+name = "aspen"
+authors = [{ name = "Amadé Nemes", email = "nemesamade@gmail.com" }]
+description = "aspen is a tool for analyzing and manipulating ASTs in the clingo ASP language, powered by tree-sitter."
 requires-python = ">=3.9"
+dependencies = [
+    "clingo",
+    "tree-sitter"
+]
 license = { file = "LICENSE" }
 dynamic = ["version"]
 readme = "README.md"
 
 [project.urls]
-Homepage = "https://fillname.org/"
+Homepage = "https://github.com/krr-up/aspen.git/"
 
 [project.optional-dependencies]
 format = ["black", "isort", "autoflake"]
 lint_pylint = ["pylint"]
 typecheck = ["types-setuptools", "mypy"]
-test = ["coverage[toml]"]
+test = ["coverage[toml]", "tree-sitter-clingo"]
 doc = ["mkdocs", "mkdocs-material", "mkdocstrings[python]", "mkdoclingo"]
-dev = ["fillname[test,typecheck,lint_pylint]"]
+lsp = ["python-lsp-server", "rope", "pylsp-mypy", "pylsp-rope", "python-lsp-black"]
+dev = ["aspen[test,typecheck,lint_pylint,lsp]"]
 
 [project.scripts]
-fillname = "fillname.__main__:main"
+aspen = "aspen.__main__:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -34,13 +39,13 @@ local_scheme = "no-local-version"
 
 [tool.isort]
 profile = "black"
-line_length = 120
+line_length = 90
 
 [tool.black]
-line-length = 120
+line-length = 90
 
 [tool.pylint.format]
-max-line-length = 120
+max-line-length = 90
 
 [tool.pylint.design]
 max-args = 10
@@ -66,8 +71,8 @@ variable-rgx = "^[a-z][a-z0-9]*((_[a-z0-9]+)*_?)?$"
 good-names = ["_"]
 
 [tool.coverage.run]
-source = ["fillname", "tests"]
-omit = ["*/fillname/__main__.py"]
+source = ["aspen", "tests"]
+omit = ["*/aspen/__main__.py"]
 
 [tool.coverage.report]
 exclude_lines = ["assert", "nocoverage"]

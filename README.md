@@ -1,4 +1,4 @@
-# fillname
+# aspen
 
 > Remove this block after following the instructions below to use the template.
 >
@@ -14,7 +14,7 @@
 To install the project, run
 
 ```bash
-pip install .
+pip install . 
 ```
 
 ## Usage
@@ -22,7 +22,7 @@ pip install .
 Run the following for basic usage information:
 
 ```bash
-fillname -h
+aspen -h
 ```
 
 To generate and open the documentation, run
