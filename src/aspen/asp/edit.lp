@@ -1,22 +1,18 @@
-%% edit((s(0),(((((),0),0),0),0)), format("{0}", ((s(0),(((((),0),2),0),0)), ()))).
-%% edit((s(0),((((((((),0),2),0),0),2),0),0)), format("d", ())).
+aspen(_replacement(edit(N,format(S,R)),R)) :- aspen(edit(N,format(S,R))).
+aspen(_replacement(G,R)) :- aspen(_replacement(G,(F,R))).
+aspen(replacement(G,F)) :- aspen(_replacement(G,(F,R))).
 
-_replacement(edit(N,format(S,R)),R) :- edit(N,format(S,R)).
-_replacement(G,R) :- _replacement(G,(F,R)).
-replacement(G,F) :- _replacement(G,(F,R)).
+aspen(target(edit(N,S),N)) :- aspen(edit(N,S)).
 
-target(edit(N,format(S,R)),N) :- edit(N,format(S,R)).
+aspen(desc((S,P), (S,P))) :- aspen(query_desc((S,P))).
+aspen(desc((S,P), (S,(P',I)))) :- aspen(desc((S,P), (S,P'))), node((S,(P',I))).
 
-desc((S,P), (S,P)) :- query_desc((S,P)).
-desc((S,P), (S,(P',I))) :- desc((S,P), (S,P')), node((S,(P',I))).
-
-query_desc(T):- replacement(G,T).
-depends(G,G') :- replacement(G,R), target(G',T), desc(R,T).
+aspen(query_desc(T)) :- aspen(replacement(G,T)).
+% edit G' must occur before G
+aspen(comes_before(G',G))
+  :- aspen(replacement(G,R)), aspen(target(G',T)), aspen(desc(R,T)), G != G'.
 
 %% #show replacement/2.
 %% #show target/2.
 %% #show desc/2.
 %% #show depends/2.
-
-edit(N, format("{0}(X)", (N,())))
-  :- node(N); type(N,"symbolic_atom"); #false : child(N,M), type(M,"terms").

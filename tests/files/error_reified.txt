@@ -1,4 +1,3 @@
-origin(s(0),"test")
 language(s(0),"clingo")
 node((s(0),()))
 type((s(0),()),"source_file")
