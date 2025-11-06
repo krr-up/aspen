@@ -2,20 +2,21 @@
 
 from collections import defaultdict
 from dataclasses import dataclass
-from graphlib import TopologicalSorter, CycleError
+from graphlib import CycleError, TopologicalSorter
 from pathlib import Path
-from typing import Optional, Literal, Sequence, List
+from typing import List, Literal, Optional, Sequence
 
 import tree_sitter as ts
+
+# pylint: disable=import-error,no-name-in-module
 from clingo.control import Control
 from clingo.core import Library
 from clingo.solve import Model
-from clingo.symbol import Symbol, Function, Number, String, Tuple_, SymbolType
+from clingo.symbol import Function, Number, String, Symbol, SymbolType, Tuple_
 
 import aspen
-from aspen.utils.logging import get_logger, get_clingo_logger, get_ts_logger
+from aspen.utils.logging import get_clingo_logger, get_logger, get_ts_logger
 from aspen.utils.tree_sitter_utils import ts_edit_tree
-
 
 logger = get_logger(__name__)
 clingo_logger = get_clingo_logger(logger)
@@ -95,7 +96,7 @@ class AspenTree:
         elif isinstance(source, str):
             source_bytes = bytes(source, encoding)
         elif isinstance(source, Path):
-            path = source.resolve()
+            path = source.resolve().resolve()
             if not path.is_file():  # nocoverage
                 raise IOError(f"File {path} not found.")
             source_bytes = path.read_bytes()
@@ -164,7 +165,7 @@ class AspenTree:
                 stack.append((child, child_path))
         return facts
 
-    def _reify_ts_tree(self, tree: ts.Tree, source: Source):
+    def _reify_ts_tree(self, tree: ts.Tree, source: Source) -> None:
         """Reify tree-sitter tree into a set of facts."""
         root_node = tree.root_node
         root_path = Tuple_(self.lib, [])
@@ -173,12 +174,6 @@ class AspenTree:
         lang_name = source.parser.language.name
         if lang_name is None:  # nocoverage
             raise ValueError(f"Language of parser of source cannot be None: {source}.")
-        if source.path is not None:
-            source_path = str(source.path)
-            path_fact = Function(
-                self.lib, "path", [source.id, String(self.lib, source_path)]
-            )
-            self.facts.append(path_fact)
         lang_fact = Function(
             self.lib,
             "language",
@@ -270,7 +265,9 @@ class AspenTree:
             path_symb = Tuple_(self.lib, [path_symb, Number(self.lib, idx)])
         return path_symb
 
-    def _re_reify_changed_subtrees(self, subtrees: defaultdict[Symbol, list[ts.Node]]):
+    def _re_reify_changed_subtrees(
+        self, subtrees: defaultdict[Symbol, list[ts.Node]]
+    ) -> None:
         """Re-reify subtrees who's syntactic structure changed due to
         edit, and delete outdated facts from before edit."""
         # drop nodes to be re-reified that are descendants of other nodes to be re-reified
@@ -386,7 +383,9 @@ class AspenTree:
         additional changed ranges that will not (necessarily) be
         detected by tree-sitter when re-parsing after the edit.
 
-        The edited symbols must first be sorted via _topological_sort_edits
+        The edited symbols must first be sorted via
+        _topological_sort_edits.
+
         """
         seen = set()
         dupes = {
@@ -509,7 +508,7 @@ class AspenTree:
         initial_program: tuple[str, Sequence[Symbol]] = ("base", ()),
         util_encodings: Sequence[str] = ("all.lp",),
         control_options: Optional[Sequence[str]] = None,
-    ):
+    ) -> None:
         """Transform fact base via a meta-encoding."""
         options = control_options if control_options is not None else []
         if meta_files is not None:  # nocoverage

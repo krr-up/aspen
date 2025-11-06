@@ -6,11 +6,13 @@ logging.
 """
 
 import logging
-from typing import TextIO, Callable
 from functools import partial
+from typing import Callable, TextIO
 
-from clingo.core import MessageType
 import tree_sitter as ts
+
+# pylint: disable=import-error,no-name-in-module
+from clingo.core import MessageType
 
 NOTSET = logging.NOTSET
 DEBUG = logging.DEBUG
@@ -56,7 +58,10 @@ def configure_logging(stream: TextIO, level: int, use_color: bool) -> None:
 
     def format_str(color: str) -> str:
         if use_color:
-            return f"{COLORS[color]}%(levelname)s:{COLORS['GREY']}  - %(message)s{COLORS['NORMAL']}"
+            return (
+                f"{COLORS[color]}%(levelname)s:{COLORS['GREY']}"
+                f"  - %(message)s{COLORS['NORMAL']}"
+            )
         return "%(levelname)s:  - %(message)s"  # nocoverage
 
     def make_handler(level: int, color: str) -> "logging.StreamHandler[TextIO]":
@@ -83,7 +88,9 @@ def get_logger(name: str) -> logging.Logger:
     return logging.getLogger(name)
 
 
-def log_clingo_message(message_code: MessageType, message: str, logger: logging.Logger) -> None:  # nocoverage
+def log_clingo_message(
+    message_code: MessageType, message: str, logger: logging.Logger
+) -> None:  # nocoverage
     """Log clingo message at the appropriate level"""
     clingo_fstring = "clingo: %s"
     if message_code is MessageType.Trace:
