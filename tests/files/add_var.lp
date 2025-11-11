@@ -5,4 +5,4 @@ aspen(edit(N, format("{0}({1})", (N,(var, ())))))
 
 aspen(edit(L, format("{0},{1}", (L, (var, ())))))
   :- node(N); type(N,"symbolic_atom"); child(N,M); M=(S,P); type(M,"terms");
-		 Max = #max{ I: named_child_idx(M,I) }, node((S,(P,I))), L = (S,(P,I)).
+		 Max = #max{ Idx: named_child_idx(M,_,Idx) }, node((S,(P,Max))), L = (S,(P,Max)).
