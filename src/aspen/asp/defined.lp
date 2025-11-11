@@ -6,3 +6,4 @@
 #defined leaf_text/2.
 #defined field/2.
 #defined next_named/2.
+#defined aspen/1.
